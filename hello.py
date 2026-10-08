@@ -1,18 +1,18 @@
 from flask import Flask, request, jsonify, render_template
-from flask_sqlalchemy import SQLAchemy
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
 # Creating a database using SQLAchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///example.db"
 
-db =SQLAchemy(app)
+db =SQLAlchemy(app)
 
 class First_row(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    source = db.Column()
-    destination = db.Column()
-    somethingElse = db.Column()
+    source = db.Column(db.String(50), nullable=False)
+    destination = db.Column(db.String(50), nullable=False)
+    somethingElse = db.Column(db.Float, nullable=False)
 
     # converts the json into a python dict
     def to_dict(self):
@@ -26,12 +26,14 @@ class First_row(db.Model):
 
 
 
+with app.app_context():
+    db.create_all()
 
 
 
 @app.route('/')
 def home():
-    return {"message": "This is the home page!"}
+    return jsonify({"message": "This is the home page!"})
 
 @app.get('/api/hello')
 def hello():
